@@ -25,7 +25,7 @@ matrix:
    env: ADDITIONAL_BUILDS="debian" LINKAGE=std
    before_script:
     - ./configure --CFLAGS="-std=c99" --CXXFLAGS="-std=c++98" --install-deps --disable-lz4-ext --disable-regex-ext --prefix="$PWD/dest"
-  - name: "Linux GCC: +Debian packages +BuiltinRegex +Strict on ppc64le"
+ - name: "Linux GCC: +Debian packages +BuiltinRegex +Strict on ppc64le"
    os: linux
    arch: ppc64le
    compiler: gcc
