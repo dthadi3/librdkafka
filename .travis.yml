@@ -25,8 +25,20 @@ matrix:
    env: ADDITIONAL_BUILDS="debian" LINKAGE=std
    before_script:
     - ./configure --CFLAGS="-std=c99" --CXXFLAGS="-std=c++98" --install-deps --disable-lz4-ext --disable-regex-ext --prefix="$PWD/dest"
+  - name: "Linux GCC: +Debian packages +BuiltinRegex +Strict on ppc64le"
+   os: linux
+   arch: ppc64le
+   compiler: gcc
+   env: ADDITIONAL_BUILDS="debian" LINKAGE=std
+   before_script:
+    - ./configure --CFLAGS="-std=c99" --CXXFLAGS="-std=c++98" --install-deps --disable-lz4-ext --disable-regex-ext --prefix="$PWD/dest"
  - name: "RPM packages"
    os: linux
+   compiler: gcc
+   env: ADDITIONAL_BUILDS="centos" SKIP_MAKE=y
+ - name: "RPM packages on ppc64le"
+   os: linux
+   arch: ppc64le
    compiler: gcc
    env: ADDITIONAL_BUILDS="centos" SKIP_MAKE=y
  - name: "Linux clang: +alpine"
@@ -35,8 +47,22 @@ matrix:
    env: ADDITIONAL_BUILDS="alpine" LINKAGE=std
    before_script:
     - ./configure --install-deps --disable-lz4-ext --prefix="$PWD/dest" --enable-werror
+ - name: "Linux clang: +alpine on ppc64le"
+   os: linux
+   arch: ppc64le
+   compiler: clang
+   env: ADDITIONAL_BUILDS="alpine" LINKAGE=std
+   before_script:
+    - ./configure --install-deps --disable-lz4-ext --prefix="$PWD/dest" --enable-werror
  - name: "Linux clang: +static +alpine-static"
    os: linux
+   compiler: clang
+   env: ADDITIONAL_BUILDS="alpine-static" LINKAGE=static
+   before_script:
+    - ./configure --enable-static --install-deps --source-deps-only --disable-gssapi --disable-lz4-ext --prefix="$PWD/dest"
+ - name: "Linux clang: +static +alpine-static on ppc64le"
+   os: linux
+   arch: ppc64le
    compiler: clang
    env: ADDITIONAL_BUILDS="alpine-static" LINKAGE=static
    before_script:
@@ -76,8 +102,32 @@ matrix:
     - sudo apt update
     - sudo apt install -y doxygen graphviz gdb
     - ./configure --install-deps --disable-lz4-ext --prefix="$PWD/dest"
+ - name: "Linux GCC: +integration-tests +copyright-check +doc-check on ppc64le"
+   os: linux
+   arch: ppc64le
+   dist: xenial
+   compiler: gcc
+   env: NO_ARTIFACTS=y RUN_INTEGRATION_TESTS=y COPYRIGHT_CHECK=y DOC_CHECK=y
+   before_script:
+    - wget -O rapidjson-dev.deb https://launchpad.net/ubuntu/+archive/primary/+files/rapidjson-dev_1.1.0+dfsg2-3_all.deb
+    - sudo dpkg -i rapidjson-dev.deb
+    - sudo pip3 install -r tests/requirements.txt
+    - sudo apt update
+    - sudo apt install -y doxygen graphviz gdb
+    - ./configure --install-deps --disable-lz4-ext --prefix="$PWD/dest"
  - name: "Linux GCC: +devel +code-cov"
    os: linux
+   dist: bionic
+   compiler: gcc
+   env: NO_ARTIFACTS=y
+   before_script:
+    - sudo apt update
+    - sudo apt install -y gdb
+    - ./configure --enable-devel --disable-lz4-ext --prefix="$PWD/dest"
+    - ./packaging/tools/rdutcoverage.sh
+ - name: "Linux GCC: +devel +code-cov on ppc64le"
+   os: linux
+   arch: ppc64le
    dist: bionic
    compiler: gcc
    env: NO_ARTIFACTS=y
